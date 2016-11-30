@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:leaf="http://java.sun.com/jsf/composite/jsf2leaf">
+	
+<h:head>
+	<style type="text/css">
+@import url("css/store.css");
+</style>
+</h:head>
+<h:body>
+
+	<h:form id="jsfcidades">
+		<p:layout fullPage="true" id="idlayout">
+			<p:layoutUnit position="west" size="400" header="Pesquisa"
+				 >
+				<h:outputText  style="vertical-align: text-top" value="Estado    "  />
+				<p:selectOneMenu  id="idEstados" value="#{cidadedigital.estado}"  converter="estadoConverter" >
+					<f:selectItem itemLabel="Todos os Estados" itemValue="" />
+				    <f:selectItems value="#{cidadedigital.estados}" />
+				    <p:ajax event="change" update="idMaps, idDados, idBotao"/>
+				</p:selectOneMenu>
+				<p:outputPanel id="idDados">
+						<br/>
+						<p:outputLabel  value="Estado - #{cidadedigital.estado}"/>
+						<br />				
+						<br/>
+						<p:outputLabel value="Populacao - #{cidadedigital.populacaoTotal}" />					
+						<br />					
+						<br/>
+						<p:outputLabel value="Total Cidades Concluidas - #{cidadedigital.totalCidadesConcluidas}" />					
+						<br />					
+						<br/>
+						<p:outputLabel value="Total Cidades Sem Previsão - #{cidadedigital.totalCidadesSemPrevisao}" />					
+						<br />					
+						<br/>
+						<p:outputLabel value="Total Cidades Em Andamento - #{cidadedigital.totalCidadesEmAndamento}" />					
+						<br />					
+						<br/>
+						<p:outputLabel value="Valor Investido - #{cidadedigital.valorInvestimento}"/>					
+						<br />					
+						<br/>
+						<p:outputLabel value="Valor Previsto - #{cidadedigital.valorPrevisto}"/>					
+				</p:outputPanel>
+ 				<p:outputPanel id="idBotao" style="text-align:center;margin-top:0" rendered="#{empty cidadedigital.estado}">
+						<br />					
+						<br/>
+					<p:commandButton value="Visualizar Cidades" oncomplete="PF('dialogo_chart').show();" update="idVisulizar" actionListener="#{cidadedigital.buscarCidades}">
+						<f:param name="idEstado" value="#{cidadedigital.estado.toString()}"/>
+					</p:commandButton>
+				</p:outputPanel>
+ 			</p:layoutUnit>
+			<p:layoutUnit position="center" header="Mapa" >
+				<p:outputPanel id="idMaps">
+					<leaf:mapAdvanced map="#{cidadedigital.mapa}"  />
+				</p:outputPanel>
+    		</p:layoutUnit>
+		</p:layout>
+		<p:panel id="idVisulizar">
+		<p:dialog header="Visualizar" widgetVar="dialogo_chart" modal="true"  width="900" height="500" >
+		    <h3 style="text-align:center;margin-top:0">Cidades</h3>
+			<p:dataTable var="cidades" value="#{cidadedigital.cidadesEscolhidas}" paginator="true" rows="10" lazy="true">
+					<p:column headerText="Cidade" sortBy="#{cidades.municipio}">
+						<h:outputText value="#{cidades.municipio}" />
+					</p:column>
+					<p:column headerText="Valor Investido" sortBy="#{cidades.valorInvestido}">
+						<h:outputText value="#{cidades.valorInvestido}" />
+					</p:column>
+					<p:column headerText="Valor Previsto" sortBy="#{cidades.valorPrevisto}">
+						<h:outputText value="#{cidades.valorPrevisto}" />
+					</p:column>
+					<p:column headerText="Status" sortBy="#{cidades.status_implantacao}">
+						<h:outputText value="#{cidades.status_implantacao}" />
+					</p:column>
+					<p:column headerText="Porcentagem Investida" sortBy="#{cidades.porcentagem}">
+						<h:outputText value="#{cidades.porcentagem}" />
+					</p:column>
+			</p:dataTable>
+		</p:dialog>
+		</p:panel>
+ 
+	</h:form>
+</h:body>
+</html>
